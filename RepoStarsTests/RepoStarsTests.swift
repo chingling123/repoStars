@@ -27,4 +27,22 @@ class RepoStarsTests: XCTestCase {
         XCTAssertNotNil(self.repoData)
     }
 
+    func test_headerTitleViewController() {
+        let sut = ViewController()
+        let _ = sut.view
+        
+        XCTAssertEqual(sut.headerLabel.text, "RepoStars")
+    }
+    
+    func test_hasTableView() {
+        let sut = ViewController()
+        guard let view = sut.view else { return }
+        
+        let hasTable = view.subviews.filter({
+            $0 is UITableView
+        })
+        
+        XCTAssertNotEqual(hasTable.count, 0)
+    }
+    
 }

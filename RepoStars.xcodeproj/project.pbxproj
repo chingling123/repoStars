@@ -81,6 +81,7 @@
 		7563AD7325857143003B196C /* RepoStars */ = {
 			isa = PBXGroup;
 			children = (
+				7563ADCA258585DC003B196C /* DataSource */,
 				7563ADC525857A7E003B196C /* Network */,
 				7563ADB82585780A003B196C /* Models */,
 				7563AD7425857143003B196C /* AppDelegate.swift */,
@@ -88,7 +89,6 @@
 				7563AD7D25857144003B196C /* Assets.xcassets */,
 				7563AD7F25857144003B196C /* LaunchScreen.storyboard */,
 				7563AD8225857144003B196C /* Info.plist */,
-				7563ADB425857618003B196C /* DataSource.swift */,
 			);
 			path = RepoStars;
 			sourceTree = "<group>";
@@ -116,6 +116,14 @@
 				7563ADC625857A97003B196C /* NetworkManager.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		7563ADCA258585DC003B196C /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+				7563ADB425857618003B196C /* DataSource.swift */,
+			);
+			path = DataSource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
