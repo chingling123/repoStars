@@ -12,31 +12,29 @@ class RepoStarsTests: XCTestCase {
 
     var repoData: RepoModel?
     let sut = RepoDataSource()
-    
+    let vc = ViewController()
+
     func test_dataLoader() {
-        
         let exp = expectation(description: "Load repo data")
-        
-        self.sut.load() { data in
+        self.loadData(completion: { data in
             self.repoData = data
             exp.fulfill()
-        }
+        })
         
         waitForExpectations(timeout: 30)
         
         XCTAssertNotNil(self.repoData)
+        XCTAssertNotEqual(self.repoData?.items.count, 0)
     }
 
     func test_headerTitleViewController() {
-        let sut = ViewController()
-        let _ = sut.view
+        let _ = vc.view
         
-        XCTAssertEqual(sut.headerLabel.text, "RepoStars")
+        XCTAssertEqual(vc.headerLabel.text, "RepoStars")
     }
     
     func test_hasTableView() {
-        let sut = ViewController()
-        guard let view = sut.view else { return }
+        guard let view = vc.view else { return }
         
         let hasTable = view.subviews.filter({
             $0 is UITableView
@@ -45,4 +43,32 @@ class RepoStarsTests: XCTestCase {
         XCTAssertNotEqual(hasTable.count, 0)
     }
     
+    func test_ViewDidLoad_NoItems() {
+        _ = vc.view
+        XCTAssertEqual(vc.tableView.numberOfRows(inSection: 0), 0)
+    }
+    
+    func test_ViewDidLoad_WithItems() {
+        let exp = expectation(description: "Load repo data")
+        self.loadData(completion: { data in
+            self.repoData = data
+            exp.fulfill()
+        })
+        
+        let newVc = ViewController(item: self.repoData)
+        
+        _ = newVc.view
+        
+        waitForExpectations(timeout: 30)
+        
+        XCTAssertNotEqual(newVc.tableView.numberOfRows(inSection: 0), 0)
+    }
+    
+    // MARK: Helper
+    
+    private func loadData(completion: @escaping (RepoModel?) -> Void) {
+        self.sut.load() { data in
+            completion(data)
+        }
+    }
 }

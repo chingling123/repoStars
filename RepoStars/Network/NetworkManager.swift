@@ -37,10 +37,10 @@ class NetworkManager {
     
     private static func buildURL(page: Int = 1) -> URL? {
         
-        var url = URLComponents(string: "https://api.github.com/search/repositories?q=language:swift&sort=stars&per_page=10")
+        var url = URLComponents(string: "https://api.github.com/search/repositories")
         
         let queryItems = [
-            URLQueryItem(name: "q", value: "anguage:swift"),
+            URLQueryItem(name: "q", value: "language:swift"),
             URLQueryItem(name: "sort", value: "stars"),
             URLQueryItem(name: "per_page", value: "10"),
             URLQueryItem(name: "page", value: "\(page)")
