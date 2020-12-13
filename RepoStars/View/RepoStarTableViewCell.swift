@@ -39,6 +39,34 @@ class RepoStarTableViewCell: UITableViewCell {
         self.authorNameLabel.text = "Author: \(item.owner.login)"
         self.repoNameLabel.text = "Repo.: \(item.name)"
         self.starsLabel.text = "Stars: \(item.stargazers_count)"
+        
+        self.loadImage(item.owner.avatar_url)
+    }
+    
+    private func reset() {
+        self.imageView?.image = nil
+    }
+    
+    private func loadImage(_ url: String) {
+        guard let hasUrl =  URL(string: url) else { return }
+        
+        let urlR = URLRequest(url: hasUrl)
+        
+        URLSession.shared.dataTask(with: urlR) { data, response, error in
+            guard
+                    let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                    let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                    let data = data, error == nil,
+                    let image = UIImage(data: data)
+                    else { return }
+            DispatchQueue.main.async() { [weak self] in
+                self?.avatar.image = image
+            }
+        }.resume()
+    }
+    
+    override func prepareForReuse() {
+        self.reset()
     }
 
 }
@@ -55,7 +83,7 @@ extension RepoStarTableViewCell: ViewCodeProtocol {
         self.avatar.translatesAutoresizingMaskIntoConstraints = false
         self.avatar.topAnchor.constraint(equalTo: self.topAnchor, constant: 5.0).isActive = true
         self.avatar.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 5.0).isActive = true
-        self.avatar.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5.0).isActive = true
+        self.avatar.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
         self.avatar.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
         
         self.authorNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +100,7 @@ extension RepoStarTableViewCell: ViewCodeProtocol {
         self.starsLabel.translatesAutoresizingMaskIntoConstraints = false
         self.starsLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5.0).isActive = true
         self.starsLabel.topAnchor.constraint(equalTo: self.repoNameLabel.topAnchor).isActive = true
-        self.starsLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 5.0).isActive = true
+        self.starsLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5.0).isActive = true
     }
     
     func Setup() {
