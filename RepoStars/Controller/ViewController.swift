@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        self.setupViews()
+        self.Setup()
         
         if self.repoData == nil {
             self.loadData()
@@ -43,31 +43,38 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController {
-    
-    private func setupViews() {
-        self.headerLabel.translatesAutoresizingMaskIntoConstraints = false
+extension ViewController: ViewCodeProtocol {
+    func AddSubViews() {
         self.view.addSubview(self.headerLabel)
+        self.view.addSubview(self.tableView)
+    }
+    
+    func ConfigureConstraints() {
+        self.headerLabel.translatesAutoresizingMaskIntoConstraints = false
         self.headerLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0.0).isActive = true
         self.headerLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0.0).isActive = true
         self.headerLabel.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0.0).isActive = true
-        
         self.headerLabel.textAlignment = .center
         self.headerLabel.text = "RepoStars"
         
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(self.tableView)
         self.tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0.0).isActive = true
         self.tableView.topAnchor.constraint(equalTo: self.headerLabel.bottomAnchor, constant: 10.0).isActive = true
         self.tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0.0).isActive = true
         self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0.0).isActive = true
+    }
+    
+    func Setup() {
+        AddSubViews()
+        ConfigureConstraints()
+        
         self.tableView.dataSource = self
     }
+
 }
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(self.repoData?.items)
         return self.repoData?.items.count ?? 0
     }
     

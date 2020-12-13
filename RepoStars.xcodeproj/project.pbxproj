@@ -15,6 +15,8 @@
 		7563ADB525857618003B196C /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7563ADB425857618003B196C /* DataSource.swift */; };
 		7563ADBA2585781A003B196C /* RepoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7563ADB92585781A003B196C /* RepoModel.swift */; };
 		7563ADC725857A97003B196C /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7563ADC625857A97003B196C /* NetworkManager.swift */; };
+		75F335C72586963F00D895B2 /* RepoStarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F335C62586963F00D895B2 /* RepoStarTableViewCell.swift */; };
+		75F335CD258697A100D895B2 /* ViewCodeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F335CC258697A100D895B2 /* ViewCodeProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,8 @@
 		7563ADB425857618003B196C /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		7563ADB92585781A003B196C /* RepoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoModel.swift; sourceTree = "<group>"; };
 		7563ADC625857A97003B196C /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		75F335C62586963F00D895B2 /* RepoStarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoStarTableViewCell.swift; sourceTree = "<group>"; };
+		75F335CC258697A100D895B2 /* ViewCodeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCodeProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,11 +85,12 @@
 		7563AD7325857143003B196C /* RepoStars */ = {
 			isa = PBXGroup;
 			children = (
+				75F335C52586961F00D895B2 /* Controller */,
+				75F335C42586961000D895B2 /* View */,
 				7563ADCA258585DC003B196C /* DataSource */,
 				7563ADC525857A7E003B196C /* Network */,
 				7563ADB82585780A003B196C /* Models */,
 				7563AD7425857143003B196C /* AppDelegate.swift */,
-				7563AD7825857143003B196C /* ViewController.swift */,
 				7563AD7D25857144003B196C /* Assets.xcassets */,
 				7563AD7F25857144003B196C /* LaunchScreen.storyboard */,
 				7563AD8225857144003B196C /* Info.plist */,
@@ -124,6 +129,23 @@
 				7563ADB425857618003B196C /* DataSource.swift */,
 			);
 			path = DataSource;
+			sourceTree = "<group>";
+		};
+		75F335C42586961000D895B2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				75F335C62586963F00D895B2 /* RepoStarTableViewCell.swift */,
+				75F335CC258697A100D895B2 /* ViewCodeProtocol.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		75F335C52586961F00D895B2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7563AD7825857143003B196C /* ViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,7 +251,9 @@
 				7563ADBA2585781A003B196C /* RepoModel.swift in Sources */,
 				7563ADC725857A97003B196C /* NetworkManager.swift in Sources */,
 				7563AD7925857143003B196C /* ViewController.swift in Sources */,
+				75F335CD258697A100D895B2 /* ViewCodeProtocol.swift in Sources */,
 				7563AD7525857143003B196C /* AppDelegate.swift in Sources */,
+				75F335C72586963F00D895B2 /* RepoStarTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

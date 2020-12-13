@@ -58,15 +58,21 @@ class RepoStarsTests: XCTestCase {
             exp.fulfill()
         })
         
-        let vc = self.makeView()
-        
         waitForExpectations(timeout: 30)
+        
+        let vc = self.makeView(item: self.repoData)
         
         XCTAssertNotEqual(vc.tableView.numberOfRows(inSection: 0), 0)
     }
     
     func test_loadData_renderItemText() {
+        let item = self.makeDummyData()
         
+        let vc = self.makeView(item: item)
+        
+        let indexPath = IndexPath(item: 0, section: 0)
+        let cell = vc.tableView.dataSource?.tableView(vc.tableView, cellForRowAt: indexPath)
+        XCTAssertEqual(cell?.textLabel?.text, "name")
     }
     
     // MARK: Helper
@@ -77,11 +83,18 @@ class RepoStarsTests: XCTestCase {
         }
     }
     
-    private func makeView() -> ViewController {
-        let newVc = ViewController(item: self.repoData)
+    private func makeView(item: RepoModel? = nil) -> ViewController {
+        let newVc = ViewController(item: item)
         
         _ = newVc.view
         
         return newVc
+    }
+    
+    private func makeDummyData() -> RepoModel {
+        let io = itemOwner(login: "login", avatar_url: "avatar")
+        let i = itemRepo(id: 1, name: "name", full_name: "full_name", stargazers_count: 1, owner: io)
+        let r = RepoModel(total_count: 1, items: [i])
+        return r
     }
 }
