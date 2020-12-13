@@ -71,8 +71,9 @@ class RepoStarsTests: XCTestCase {
         let vc = self.makeView(item: item)
         
         let indexPath = IndexPath(item: 0, section: 0)
-        let cell = vc.tableView.dataSource?.tableView(vc.tableView, cellForRowAt: indexPath)
-        XCTAssertEqual(cell?.textLabel?.text, "name")
+        let cell = vc.tableView.dataSource?.tableView(vc.tableView, cellForRowAt: indexPath) as? RepoStarTableViewCell
+        
+        XCTAssertEqual(cell?.authorNameLabel.text, "login")
     }
     
     // MARK: Helper

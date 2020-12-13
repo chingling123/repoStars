@@ -42,7 +42,7 @@ class NetworkManager {
         let queryItems = [
             URLQueryItem(name: "q", value: "language:swift"),
             URLQueryItem(name: "sort", value: "stars"),
-            URLQueryItem(name: "per_page", value: "10"),
+            URLQueryItem(name: "per_page", value: "30"),
             URLQueryItem(name: "page", value: "\(page)")
         ]
         

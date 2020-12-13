@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     private var repoData: RepoModel?
     private let dataSource = RepoDataSource()
     private var pageN = 1
+    private let cellIdentifier = "repoStarCell"
     
     convenience init(item: RepoModel? = nil) {
         self.init()
@@ -52,7 +53,7 @@ extension ViewController: ViewCodeProtocol {
     func ConfigureConstraints() {
         self.headerLabel.translatesAutoresizingMaskIntoConstraints = false
         self.headerLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0.0).isActive = true
-        self.headerLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0.0).isActive = true
+        self.headerLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10.0).isActive = true
         self.headerLabel.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0.0).isActive = true
         self.headerLabel.textAlignment = .center
         self.headerLabel.text = "RepoStars"
@@ -61,13 +62,18 @@ extension ViewController: ViewCodeProtocol {
         self.tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0.0).isActive = true
         self.tableView.topAnchor.constraint(equalTo: self.headerLabel.bottomAnchor, constant: 10.0).isActive = true
         self.tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0.0).isActive = true
-        self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0.0).isActive = true
+        self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0.0).isActive = true
     }
     
     func Setup() {
         AddSubViews()
         ConfigureConstraints()
         
+        self.view.backgroundColor = .white
+        
+        self.tableView.register(RepoStarTableViewCell.classForCoder(), forCellReuseIdentifier: cellIdentifier)
+        self.tableView.estimatedRowHeight = 60.0
+        self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.dataSource = self
     }
 
@@ -79,6 +85,12 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? RepoStarTableViewCell else { return UITableViewCell() }
+        
+        if let hasItem = self.repoData?.items[indexPath.row] {
+            cell.setup(item: hasItem)
+        }
+        
+        return cell
     }
 }
