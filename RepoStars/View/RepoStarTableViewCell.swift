@@ -78,8 +78,5 @@ extension RepoStarTableViewCell: ViewCodeProtocol {
     func Setup() {
         AddSubViews()
         ConfigureConstraints()
-        
-        self.authorNameLabel.numberOfLines = 0
-        self.repoNameLabel.numberOfLines = 0
     }
 }

@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     private let dataSource = RepoDataSource()
     private var pageN = 1
     private let cellIdentifier = "repoStarCell"
+    private let refreshControl = UIRefreshControl()
     
     convenience init(item: RepoModel? = nil) {
         self.init()
@@ -39,8 +40,13 @@ class ViewController: UIViewController {
                 guard let hasResult = result else { return }
                 self.repoData = hasResult
                 self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
             }
         }
+    }
+    
+    @objc private func pullToRefresh() {
+        self.loadData()
     }
 }
 
@@ -75,6 +81,9 @@ extension ViewController: ViewCodeProtocol {
         self.tableView.estimatedRowHeight = 60.0
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.dataSource = self
+        self.tableView.refreshControl = refreshControl
+        
+        self.refreshControl.addTarget(self, action: #selector(self.pullToRefresh), for: .valueChanged)
     }
 
 }
