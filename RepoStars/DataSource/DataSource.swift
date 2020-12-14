@@ -7,11 +7,56 @@
 
 import Foundation
 
+protocol RepoDataSourceDelegate: class {
+    func fetchCompleted(indexes: [IndexPath]?)
+    func fetchError()
+}
+
 class RepoDataSource {
-    func load(page: Int = 1, completion: @escaping (_ results: RepoModel?) -> Void)
+    var isInProgress = false
+    var itemsToDisplay = [itemRepo]()
+    var currentPage = 1
+    
+    weak var delegate: RepoDataSourceDelegate?
+    
+    func refresh() {
+        self.itemsToDisplay = [itemRepo]()
+        self.load()
+    }
+    
+    func load()
     {
-        NetworkManager.LoadData { (data) in
-            completion(data)
+        guard !isInProgress else {
+            return
         }
+        
+        isInProgress = true
+        NetworkManager.LoadData(page: currentPage) { [weak self] (data) in
+            DispatchQueue.main.async {
+                guard let hasData = data else {
+                    self?.delegate?.fetchError()
+                    return
+                }
+                
+                self?.isInProgress = false
+                
+                self?.itemsToDisplay.append(contentsOf: hasData.items)
+                
+                if self?.currentPage ?? 0 > 1 {
+                    let newIndexes = self?.calculateIndexes(newItens: hasData.items)
+                    self?.delegate?.fetchCompleted(indexes: newIndexes)
+                } else {
+                    self?.delegate?.fetchCompleted(indexes: nil)
+                }
+                
+                self?.currentPage += 1
+            }
+        }
+    }
+    
+    private func calculateIndexes(newItens: [itemRepo]) -> [IndexPath] {
+        let startIdx = self.itemsToDisplay.count - newItens.count
+        let endIdx = startIdx + newItens.count
+        return (startIdx..<endIdx).map {IndexPath(row: $0, section: 0)}
     }
 }

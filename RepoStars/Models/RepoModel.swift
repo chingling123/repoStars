@@ -9,7 +9,7 @@ import Foundation
 
 struct RepoModel: Codable {
     let total_count: Int
-    let items: [itemRepo]
+    var items: [itemRepo]
 }
 
 struct itemRepo: Codable {

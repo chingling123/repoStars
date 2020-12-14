@@ -10,25 +10,22 @@ import XCTest
 
 class RepoStarsTests: XCTestCase {
 
-    var repoData: RepoModel?
+    var repoData: [itemRepo]?
     let sut = RepoDataSource()
-
+    let exp = XCTestExpectation()
+    
     func test_dataLoader() {
-        let exp = expectation(description: "Load repo data")
-        self.loadData(completion: { data in
-            self.repoData = data
-            exp.fulfill()
-        })
-        
-        waitForExpectations(timeout: 30)
+        sut.delegate = self
+        sut.load()
+                
+        wait(for: [self.exp], timeout: 30)
         
         XCTAssertNotNil(self.repoData)
-        XCTAssertNotEqual(self.repoData?.items.count, 0)
+        XCTAssertNotEqual(self.repoData?.count, 0)
     }
 
     func test_headerTitleViewController() {
         let vc = self.makeView()
-
         
         XCTAssertEqual(vc.headerLabel.text, "RepoStars")
     }
@@ -51,51 +48,25 @@ class RepoStarsTests: XCTestCase {
         XCTAssertEqual(vc.tableView.numberOfRows(inSection: 0), 0)
     }
     
-    func test_loadData_withItems() {
-        let exp = expectation(description: "Load repo data")
-        self.loadData(completion: { data in
-            self.repoData = data
-            exp.fulfill()
-        })
-        
-        waitForExpectations(timeout: 30)
-        
-        let vc = self.makeView(item: self.repoData)
-        
-        XCTAssertNotEqual(vc.tableView.numberOfRows(inSection: 0), 0)
-    }
-    
-    func test_loadData_renderItemText() {
-        let item = self.makeDummyData()
-        
-        let vc = self.makeView(item: item)
-        
-        let indexPath = IndexPath(item: 0, section: 0)
-        let cell = vc.tableView.dataSource?.tableView(vc.tableView, cellForRowAt: indexPath) as? RepoStarTableViewCell
-        
-        XCTAssertEqual(cell?.authorNameLabel.text, "login")
-    }
-    
     // MARK: Helper
     
-    private func loadData(completion: @escaping (RepoModel?) -> Void) {
-        self.sut.load() { data in
-            completion(data)
-        }
-    }
-    
-    private func makeView(item: RepoModel? = nil) -> ViewController {
-        let newVc = ViewController(item: item)
+    private func makeView() -> ViewController {
+        let newVc = ViewController()
         
         _ = newVc.view
         
         return newVc
     }
-    
-    private func makeDummyData() -> RepoModel {
-        let io = itemOwner(login: "login", avatar_url: "avatar")
-        let i = itemRepo(id: 1, name: "name", full_name: "full_name", stargazers_count: 1, owner: io)
-        let r = RepoModel(total_count: 1, items: [i])
-        return r
+}
+
+extension RepoStarsTests: RepoDataSourceDelegate {
+    func fetchCompleted(indexes: [IndexPath]?) {
+        self.repoData = self.sut.itemsToDisplay
+        self.exp.fulfill()
     }
+    
+    func fetchError() {
+        
+    }
+
 }

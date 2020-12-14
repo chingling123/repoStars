@@ -15,7 +15,6 @@ class NetworkManager {
             completion(nil)
             return
         }
-        
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
                 guard let hasData = data else {

@@ -12,16 +12,9 @@ class ViewController: UIViewController {
     let headerLabel = UILabel()
     let tableView = UITableView()
     
-    private var repoData: RepoModel?
     private let dataSource = RepoDataSource()
-    private var pageN = 1
     private let cellIdentifier = "repoStarCell"
     private let refreshControl = UIRefreshControl()
-    
-    convenience init(item: RepoModel? = nil) {
-        self.init()
-        self.repoData = item
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,24 +22,16 @@ class ViewController: UIViewController {
         
         self.Setup()
         
-        if self.repoData == nil {
-            self.loadData()
-        }
+        self.loadData()
     }
     
     private func loadData() {
-        self.dataSource.load(page: pageN) { (result) in
-            DispatchQueue.main.async {
-                guard let hasResult = result else { return }
-                self.repoData = hasResult
-                self.tableView.reloadData()
-                self.refreshControl.endRefreshing()
-            }
-        }
+        self.dataSource.load()
     }
     
     @objc private func pullToRefresh() {
-        self.loadData()
+        self.dataSource.currentPage = 1
+        self.dataSource.refresh()
     }
 }
 
@@ -81,25 +66,53 @@ extension ViewController: ViewCodeProtocol {
         self.tableView.estimatedRowHeight = 60.0
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.dataSource = self
+        self.tableView.delegate = self
         self.tableView.refreshControl = refreshControl
         
         self.refreshControl.addTarget(self, action: #selector(self.pullToRefresh), for: .valueChanged)
+        
+        self.dataSource.delegate = self
     }
 
 }
 
-extension ViewController: UITableViewDataSource {
+extension ViewController: RepoDataSourceDelegate {
+    func fetchCompleted(indexes: [IndexPath]?) {
+        guard let hasIndexes = indexes else {
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
+            return
+        }
+        
+        self.tableView.beginUpdates()
+        self.tableView.insertRows(at: hasIndexes, with: .automatic)
+        self.tableView.endUpdates()
+    }
+    
+    func fetchError() {
+        
+    }
+    
+    
+}
+
+extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.repoData?.items.count ?? 0
+        return self.dataSource.itemsToDisplay.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? RepoStarTableViewCell else { return UITableViewCell() }
         
-        if let hasItem = self.repoData?.items[indexPath.row] {
-            cell.setup(item: hasItem)
-        }
+        cell.setup(item: self.dataSource.itemsToDisplay[indexPath.row])
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == (self.dataSource.itemsToDisplay.count - 1) {
+            self.dataSource.load()
+        }
     }
 }
