@@ -12,6 +12,16 @@ class ViewController: UIViewController {
     let headerLabel = UILabel()
     let tableView = UITableView()
     
+    private lazy var loadLabel: UILabel = {
+        let l = UILabel()
+        l.isHidden = true
+        l.backgroundColor = .white
+        l.text = "Carregando..."
+        l.textAlignment = .center
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+    
     private let dataSource = RepoDataSource()
     private let cellIdentifier = "repoStarCell"
     private let refreshControl = UIRefreshControl()
@@ -39,6 +49,7 @@ extension ViewController: ViewCodeProtocol {
     func AddSubViews() {
         self.view.addSubview(self.headerLabel)
         self.view.addSubview(self.tableView)
+        self.view.addSubview(self.loadLabel)
     }
     
     func ConfigureConstraints() {
@@ -54,6 +65,10 @@ extension ViewController: ViewCodeProtocol {
         self.tableView.topAnchor.constraint(equalTo: self.headerLabel.bottomAnchor, constant: 10.0).isActive = true
         self.tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0.0).isActive = true
         self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0.0).isActive = true
+        
+        self.loadLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0.0).isActive = true
+        self.loadLabel.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0.0).isActive = true
+        self.loadLabel.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0.0).isActive = true
     }
     
     func Setup() {
@@ -79,6 +94,7 @@ extension ViewController: ViewCodeProtocol {
 extension ViewController: RepoDataSourceDelegate {
     func fetchCompleted(indexes: [IndexPath]?) {
         guard let hasIndexes = indexes else {
+            self.loadLabel.isHidden = true
             self.tableView.reloadData()
             self.refreshControl.endRefreshing()
             return
@@ -87,10 +103,15 @@ extension ViewController: RepoDataSourceDelegate {
         self.tableView.beginUpdates()
         self.tableView.insertRows(at: hasIndexes, with: .automatic)
         self.tableView.endUpdates()
+        self.loadLabel.isHidden = true
     }
     
     func fetchError() {
+        self.loadLabel.isHidden = true
+        let uiA = UIAlertController(title: "Erro", message: "Erro ao carregar dados", preferredStyle: .alert)
+        uiA.addAction(UIAlertAction(title: "OK", style: .destructive, handler: nil))
         
+        self.present(uiA, animated: true, completion: nil)
     }
     
     
@@ -112,6 +133,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == (self.dataSource.itemsToDisplay.count - 1) {
+            self.loadLabel.isHidden = false
             self.dataSource.load()
         }
     }
